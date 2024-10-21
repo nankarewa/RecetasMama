@@ -1,45 +1,176 @@
 import 'package:flutter/material.dart';
+import 'package:recetas/Model/Receta.dart';
+import 'package:recetas/Model/RecetasData.dart';
+import 'Style/AppTheme.dart'; // Importamos los temas
 
 void main() {
   runApp(RecetasApp());
 }
 
-class RecetasApp extends StatelessWidget {
+class RecetasApp extends StatefulWidget {
+  @override
+  _RecetasAppState createState() => _RecetasAppState();
+}
+
+class _RecetasAppState extends State<RecetasApp> {
+  // Iniciamos con el tema claro por defecto
+  ThemeMode _themeMode = ThemeMode.light;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: ValueKey(_themeMode),
       title: 'Recetario',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
+      theme: AppTheme.lightTheme, // Tema claro
+      darkTheme: AppTheme.darkTheme, // Tema oscuro
+      themeMode: _themeMode, // Usamos la variable para cambiar de tema
+      home: ListaRecetas(
+        onThemeChanged: (ThemeMode mode) {
+          setState(() {
+            _themeMode = mode; // Cambiamos el modo de tema
+          });
+        },
+        themeMode: _themeMode, // Pasamos el tema actual al widget
       ),
-      home: ListaRecetas(),
     );
   }
 }
 
-class ListaRecetas extends StatelessWidget {
+class ListaRecetas extends StatefulWidget {
+  final Function(ThemeMode) onThemeChanged;
+  final ThemeMode themeMode;
+
+  ListaRecetas({required this.onThemeChanged, required this.themeMode});
+
+  @override
+  _ListaRecetasState createState() => _ListaRecetasState();
+}
+
+class _ListaRecetasState extends State<ListaRecetas> {
+  List<Receta> recetasFiltradas = recetas;
+  String _query = '';
+
+  void _buscarReceta(String query) {
+    setState(() {
+      _query = query;
+      recetasFiltradas = recetas
+          .where((receta) =>
+              receta.titulo.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recetario'),
-      ),
-      body: ListView.builder(
-        itemCount: recetas.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(recetas[index].titulo),
-            subtitle: Text(recetas[index].descripcion),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetallesReceta(receta: recetas[index]),
-                ),
-              );
+        title: Text('Recetario de Mamá'),
+        actions: [
+          // Botón para cambiar entre modo claro y oscuro
+          IconButton(
+            icon: Icon(
+              widget.themeMode == ThemeMode.dark
+                  ? Icons.light_mode // Sol si está en modo oscuro
+                  : Icons.dark_mode, // Luna si está en modo claro
+            ),
+            onPressed: () {
+              // Alternar entre tema claro y oscuro
+              ThemeMode newThemeMode = widget.themeMode == ThemeMode.dark
+                  ? ThemeMode.light
+                  : ThemeMode.dark;
+              widget.onThemeChanged(newThemeMode);
             },
-          );
-        },
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: _buscarReceta,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                hintText: 'Buscar receta...',
+                prefixIcon: Icon(Icons.search, color: Colors.black),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                 hintStyle: TextStyle(color: Colors.grey),
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.8,
+          ),
+          itemCount: recetasFiltradas.length,
+          itemBuilder: (context, index) {
+            return Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetallesReceta(
+                        receta: recetasFiltradas[index],
+                      ),
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(15),
+                      ),
+                     child: Image.asset(
+                      recetasFiltradas[index].imagenUrl,  // Usamos la imagen local desde los assets
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
+
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            recetasFiltradas[index].titulo,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            recetasFiltradas[index].descripcion,
+                            style: Theme.of(context).textTheme.bodyMedium, // Usamos el texto del tema
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -56,11 +187,22 @@ class DetallesReceta extends StatelessWidget {
       appBar: AppBar(
         title: Text(receta.titulo),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                receta.imagenUrl,  // Usamos la ruta local de la imagen en lugar de la URL
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+              ),
+            ),
+
+            SizedBox(height: 16),
             Text(
               'Ingredientes:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -82,32 +224,3 @@ class DetallesReceta extends StatelessWidget {
     );
   }
 }
-
-class Receta {
-  final String titulo;
-  final String descripcion;
-  final List<String> ingredientes;
-  final String instrucciones;
-
-  Receta({
-    required this.titulo,
-    required this.descripcion,
-    required this.ingredientes,
-    required this.instrucciones,
-  });
-}
-
-List<Receta> recetas = [
-  Receta(
-    titulo: 'Tortilla de Patatas',
-    descripcion: 'Un clásico español hecho con patatas y huevos.',
-    ingredientes: ['4 patatas', '6 huevos', 'Sal', 'Aceite de oliva'],
-    instrucciones: '1. Pelar y cortar las patatas...\n2. Freírlas hasta dorar...\n3. Batir los huevos...',
-  ),
-  Receta(
-    titulo: 'Gazpacho',
-    descripcion: 'Una sopa fría de tomate, perfecta para el verano.',
-    ingredientes: ['6 tomates', '1 pepino', '1 pimiento verde', 'Sal', 'Vinagre', 'Aceite de oliva'],
-    instrucciones: '1. Lavar y cortar las verduras...\n2. Licuarlas todas juntas...\n3. Dejar enfriar y servir frío...',
-  ),
-];
