@@ -51,14 +51,31 @@ class _ListaRecetasState extends State<ListaRecetas> {
   String _query = '';
 
   void _buscarReceta(String query) {
-    setState(() {
-      _query = query;
-      recetasFiltradas = recetas
-          .where((receta) =>
-              receta.titulo.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
+  setState(() {
+    // Normalizamos el input del usuario eliminando acentos y pasando a minúsculas
+    String normalizedQuery = removeDiacritics(query.toLowerCase());
+
+    // Filtramos las recetas eliminando acentos y pasando a minúsculas en los títulos
+    recetasFiltradas = recetas.where((receta) {
+      String normalizedTitulo = removeDiacritics(receta.titulo.toLowerCase());
+      return normalizedTitulo.contains(normalizedQuery);
+    }).toList();
+  });
+}
+
+
+
+  String removeDiacritics(String str) {
+  const withDiacritics = 'áàäâãéèëêíìïîóòöôõúùüûñç';
+  const withoutDiacritics = 'aaaaaeeeeiiiiooooouuuunc';
+
+  for (int i = 0; i < withDiacritics.length; i++) {
+    str = str.replaceAll(withDiacritics[i], withoutDiacritics[i]);
   }
+
+  return str;
+}
+
 
   @override
   Widget build(BuildContext context) {
