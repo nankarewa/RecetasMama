@@ -1,12 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:recetas/Model/Receta.dart';
 import 'package:recetas/Model/RecetasData.dart';
+import 'package:recetas/Tabs/mainTab.dart';
 import 'Style/AppTheme.dart'; // Importamos los temas
 
 void main() {
-  runApp(RecetasApp());
+  runApp(MyApp());
 }
 
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  // Función para cambiar el tema
+  void _toggleTheme(ThemeMode newThemeMode) {
+    setState(() {
+      _themeMode = newThemeMode;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Yumm App',
+      theme: ThemeData(
+        primarySwatch: Colors.yellow,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.yellow,
+        brightness: Brightness.dark,
+      ),
+      themeMode: _themeMode,
+      home: MainTab(
+        themeMode: _themeMode, // Pasamos el tema actual
+        onThemeChanged: _toggleTheme, // Pasamos la función para cambiar el tema
+      ),
+    );
+  }
+}
+
+
+
+
+//-------------------------------------------
 class RecetasApp extends StatefulWidget {
   @override
   _RecetasAppState createState() => _RecetasAppState();

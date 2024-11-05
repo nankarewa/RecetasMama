@@ -14,6 +14,8 @@ Receta(
     
 Consejo: Clavar un cuchillo para ver si el pastel esta hecho. Si al clavar el cuchillo, sale humedo, quiere decir que aun no esta hecho''',
     imagenUrl: 'assets/bizcocho.jpg',
+ autor: 'Pablo Motos',
+
   ),
 
   Receta(
@@ -37,7 +39,7 @@ Consejo: Clavar un cuchillo para ver si el pastel esta hecho. Si al clavar el cu
     'Sal'
   ],
   instrucciones: '''
-1. Hierve la carne con los garbanzos. Fríe todas las verduras (menos la col) y añádelas al puchero.
+1. Hierve la carne con los garbanzos los cuales han estado en remojo 24h. Fríe todas las verduras y añádelas al puchero.
 
 2. Añade la canela, una cucharada grande de especias para couscous, el azafrán y la sal.
 
@@ -48,6 +50,7 @@ Consejo: Clavar un cuchillo para ver si el pastel esta hecho. Si al clavar el cu
 5. Sirve el couscous acompañado de la carne, las verduras y los garbanzos.
 ''',
   imagenUrl: 'assets/couscous.jpg',
+  autor: 'Pablo Motos'
 ),
 
 Receta(
@@ -71,6 +74,7 @@ Receta(
 5. Hornea a 180°C durante 3/4 de hora al baño maría (con un poco de agua en la bandeja).
 ''',
   imagenUrl: 'assets/flan.jpg',
+    autor: 'Pablo Motos'
 ),
 
   Receta(
@@ -91,6 +95,7 @@ Receta(
 3. Más tarde ir echando el caldo y removiendo.
 ''',
   imagenUrl: 'assets/fideua.jpg',
+    autor: 'Pablo Motos'
 ),
 
 
@@ -126,6 +131,7 @@ Receta(
 
 ''',
   imagenUrl: 'assets/tarta-de-manzana.jpg',
+    autor: 'Pablo Motos'
 ),
 
 
@@ -158,6 +164,7 @@ Receta(
 6. Cocina a fuego lento y corta el solomillo en rodajas antes de servir. Deja que todo haga 'chup chup' mientras se termina de cocinar.
 ''',
   imagenUrl: 'assets/solomillo.jpg',
+    autor: 'Pablo Motos'
 ),
 
 Receta(
@@ -182,6 +189,7 @@ Receta(
 6. Cocina el crêpe por ambos lados hasta que esté dorado. Repite con el resto de la masa.
 ''',
   imagenUrl: 'assets/crepes.jpg',
+    autor: 'Pablo Motos'
 ),
 
 Receta(
@@ -208,7 +216,9 @@ Receta(
 
 6. Hornea durante 20 minutos a 180°C.
 ''',
-  imagenUrl: 'assets/brownie.jpg',
+  imagenUrl: 'assets/brownie.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -234,7 +244,9 @@ Receta(
 
 5. Saca el molde del horno y deja que enfríe al menos 30 minutos antes de servir.
 ''',
-  imagenUrl: 'assets/brownie-cacahuete.jpg',
+  imagenUrl: 'assets/brownie-cacahuete.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -263,7 +275,9 @@ Receta(
 
 6. Cocina hasta que la salsa espese un poco.
 ''',
-  imagenUrl: 'assets/caracoles_salsa.jpg',
+  imagenUrl: 'assets/caracoles_salsa.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -291,7 +305,9 @@ Receta(
 
 6. Sirve adornado con perejil fresco.
 ''',
-  imagenUrl: 'assets/gambasVino.jpg',
+  imagenUrl: 'assets/gambasVino.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -319,7 +335,9 @@ Receta(
 
 3. Prepara la masa y fríe los pestiños en abundante aceite caliente.
 ''',
-  imagenUrl: 'assets/pestinos.jpg',
+  imagenUrl: 'assets/pestinos.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -343,7 +361,9 @@ Receta(
 
 4. Forma las rosquillas y fríelas en abundante aceite caliente.
 ''',
-  imagenUrl: 'assets/rosquillas.jpg',
+  imagenUrl: 'assets/rosquillas.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -366,7 +386,9 @@ Receta(
 
 4. Si lo deseas, añade un poco de leche condensada al final.
 ''',
-  imagenUrl: 'assets/arrozLeche.jpg',
+  imagenUrl: 'assets/arrozLeche.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -390,7 +412,9 @@ Receta(
 
 4. Espolvorea un poco de nuez moscada y sigue removiendo hasta espesar.
 ''',
-  imagenUrl: 'assets/croquetas.jpg',
+  imagenUrl: 'assets/croquetas.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -416,7 +440,9 @@ Receta(
 
 6. Antes de servir, espolvorea con canela molida.
 ''',
-  imagenUrl: 'assets/lecheMerengada.jpg',
+  imagenUrl: 'assets/lecheMerengada.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -448,7 +474,9 @@ Receta(
 
 4. Cuando esté listo, pasa los ingredientes por el pasapurés para obtener una salsa homogénea. ¡Cuidado con los clavos!
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/calamares.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -470,7 +498,9 @@ Receta(
 
 3. Forma pequeñas tortillitas y fríelas en abundante aceite caliente hasta que estén doradas.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/tortillita.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -492,7 +522,9 @@ Receta(
 
 3. Fríe los filetes en abundante aceite caliente hasta que estén dorados por ambos lados.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/fielteRuso.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -522,7 +554,9 @@ Receta(
 
 5. Cocina a fuego lento hasta que la carne esté tierna y bien impregnada de la salsa.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/carneSalsa.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -551,7 +585,9 @@ Receta(
 
 4. Cocina a fuego lento hasta que los calabacines estén tiernos y bien impregnados de la salsa.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/calabacin.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -575,7 +611,9 @@ Receta(
 
 4. Finalmente, añade las gambas y cocina hasta que estén bien hechas.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/gambasSalsa.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -606,7 +644,9 @@ Receta(
 
 5. Sirve muy frío, decorado con las verduras reservadas.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/gazpacho.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -631,7 +671,9 @@ Receta(
 
 5. Hornea durante 1/2 hora o hasta que estén doradas.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/tartaleta.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -658,7 +700,9 @@ Receta(
 
 6. Vierte la salsa en la olla junto a la carne y cocina a fuego lento hasta que esté tierna.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/fricando.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -688,7 +732,9 @@ Receta(
 
 6. Agrega la merluza y cuece a fuego bajo durante 10 minutos.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/merluza.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -713,7 +759,9 @@ Receta(
 
 4. Agrega una cucharadita de azúcar y cocina todo junto hasta que esté listo.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/polloVino.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -741,7 +789,9 @@ Receta(
 
 5. Rellena la piña con la mezcla y refrigera hasta que esté bien fría.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/piña.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 Receta(
@@ -775,7 +825,9 @@ Receta(
 
 6. Cocina hasta que se integren los sabores.
 ''',
-  imagenUrl: '',
+  imagenUrl: 'assets/raya.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
@@ -802,7 +854,9 @@ Receta(
 
 4. Incorpora sal, azafrán y el arroz. Cocina a fuego medio, añadiendo agua caliente poco a poco hasta que el arroz esté en su punto.
 ''',
-  imagenUrl: 'assets/arroz_pollo_conejo.jpg',
+  imagenUrl: 'assets/arroz_pollo_conejo.j pg',
+ autor: 'Pablo Motos',
+
 ),
 
 
