@@ -21,11 +21,18 @@ class MainTab extends StatefulWidget {
 
 class _MainTabState extends State<MainTab> {
   late ThemeMode _currentThemeMode;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _currentThemeMode = widget.themeMode;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Limpiar el controlador
+    super.dispose();
   }
 
   void _toggleTheme() {
@@ -65,8 +72,8 @@ class _MainTabState extends State<MainTab> {
                       child: Image.asset(
                         'assets/lemon.png',
                         fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
                       ),
                     ),
                   ),
@@ -190,7 +197,9 @@ class _MainTabState extends State<MainTab> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06),
                             Row(
                               children: [
                                 Expanded(
@@ -206,16 +215,20 @@ class _MainTabState extends State<MainTab> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 8),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.08),
                                 Icon(
                                   Icons.search,
                                   color: Color(0xFFF4D516),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 250),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05),
                             // Scroll horizontal con los tipos de cocina dentro del card
-                            Container(
+                            SizedBox(
                               height: 280,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
@@ -259,9 +272,27 @@ class _MainTabState extends State<MainTab> {
                     ),
                   ),
                 ),
+
+                SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+
+                Positioned(
+                  bottom: MediaQuery.of(context).size.height * 0.1,
+                  left: (MediaQuery.of(context).size.width - 50) / 2,
+
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons
+                            .keyboard_arrow_down, // Icono de flecha hacia abajo
+                        size: 50, // Tamaño del icono
+                        color: Color(0xFFF4D516), // Color del icono
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.08),
             // Nueva sección con contenido adicional
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -290,7 +321,7 @@ class _MainTabState extends State<MainTab> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
                   //---------------------------------------------------
                   // FutureBuilder para cargar recetas de la API
@@ -333,7 +364,9 @@ class _MainTabState extends State<MainTab> {
                               );
                             },
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
 
                           // Grid de recetas
                           GridView.builder(
@@ -379,7 +412,7 @@ class _MainTabState extends State<MainTab> {
               ),
             ),
 
-            SizedBox(height: 30),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Align(
@@ -415,11 +448,11 @@ class _MainTabState extends State<MainTab> {
               ),
             ),
 
-            SizedBox(height: 30),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
 
             Container(
               height: 180,
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder<List<Widget>>(
                 future:
                     buildSeasonCards(), // Llamada a la función que construye las tarjetas
@@ -433,8 +466,16 @@ class _MainTabState extends State<MainTab> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Center(child: Text('No hay datos disponibles'));
                   }
-
+                  // Realizar el desplazamiento después de cargar los datos
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(
+                          MediaQuery.of(context).size.width *
+                              0.02); // Desplazar el scroll 40 píxeles
+                    }
+                  });
                   return ListView(
+                    controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     children: snapshot.data!, // Las tarjetas generadas
                   );
@@ -442,7 +483,83 @@ class _MainTabState extends State<MainTab> {
               ),
             ),
 
-            SizedBox(height: 30),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+
+            //=====================================================
+            //============   Sección Inspiracion   ================
+            //=====================================================
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 37, 37, 37),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '¿Necesitas ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'inspiración?',
+                          style: TextStyle(
+                            color: Colors.yellow,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Dos columnas por fila
+                      crossAxisSpacing: 4, // Espaciado horizontal
+                      mainAxisSpacing: 8, // Espaciado vertical
+                      childAspectRatio: 1.8,
+                    ),
+                    itemCount: 8, // Número total de íconos
+                    itemBuilder: (context, index) {
+                      final items = [
+                        {"icon": Icons.lunch_dining, "label": "Batch cooking"},
+                        {"icon": Icons.timer, "label": "Menos de 30Min"},
+                        {"icon": Icons.cake, "label": "Postres"},
+                        {"icon": Icons.eco, "label": "Vegetarianas"},
+                        {
+                          "icon": Icons.local_fire_department,
+                          "label": "Healthy"
+                        },
+                        {"icon": Icons.fastfood, "label": "Aperitivos"},
+                        {"icon": Icons.local_drink, "label": "Bebidas"},
+                        {
+                          "icon": Icons.emoji_food_beverage,
+                          "label": "Guilty Pleasures"
+                        },
+                      ];
+                      return _buildCategoryButton(
+                        items[index]["icon"] as IconData,
+                        items[index]["label"] as String,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.08),
           ],
         ),
       ),
@@ -583,6 +700,7 @@ class _MainTabState extends State<MainTab> {
 // Widget para crear un card de ingredientes de temporada
   Widget _buildSeasonCard(
       String title, String imagePath, Color color, bool flip) {
+    print(imagePath);
     return Container(
       width: 180,
       height: 180,
@@ -601,11 +719,27 @@ class _MainTabState extends State<MainTab> {
           Positioned.fill(
             child: Align(
               alignment: Alignment.topCenter,
-              child: Image.asset(
-                imagePath,
+              child: Image.network(
+                imagePath, // URL remota
                 fit: BoxFit.cover,
                 width: 150,
                 height: 150,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.error,
+                    size: 50,
+                    color: Colors.red,
+                  ); // Muestra un ícono de error si no se carga la imagen
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child; // La imagen se cargó correctamente
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(), // Indicador de carga
+                    );
+                  }
+                },
               ),
             ),
           ),
@@ -655,5 +789,29 @@ class _MainTabState extends State<MainTab> {
         ),
       );
     }).toList();
+  }
+
+// Función auxiliar para construir los botones de categorías
+  Widget _buildCategoryButton(IconData icon, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          color: Colors.yellow,
+          size: 54,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
   }
 }
