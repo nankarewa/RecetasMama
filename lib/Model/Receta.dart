@@ -1,4 +1,4 @@
-import 'package:recetas/Model/Ingrediente.dart';
+import 'package:yumm/Model/Ingrediente.dart';
 
 class Receta {
   final int id;

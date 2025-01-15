@@ -1,33 +1,27 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:recetas/Model/Receta.dart';
-import 'package:recetas/Model/RecetasData.dart';
-import 'package:recetas/Proxy/recetaAPI.dart';
-import 'package:recetas/Tabs/mainTab.dart';
-import 'package:recetas/Tabs/recetaTab.dart';
-import '../Style/AppTheme.dart'; // Importamos los temas
+import 'package:provider/provider.dart';
+import 'package:yumm/Model/Receta.dart';
+import 'package:yumm/Model/RecetasData.dart';
+import 'package:yumm/Provider/theme_provider.dart';
+import 'package:yumm/Proxy/recetaAPI.dart';
+import 'package:yumm/Tabs/login_screen.dart';
+import 'package:yumm/Tabs/mainTab.dart';
+import 'package:yumm/Tabs/recetaTab.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// Importamos los temas
 import 'package:google_fonts/google_fonts.dart';
 import '../Proxy/mainMenuApi.dart';
 
 class MainTab extends StatefulWidget {
-  final ThemeMode themeMode;
-  final Function(ThemeMode) onThemeChanged;
-
-  MainTab({required this.themeMode, required this.onThemeChanged});
+  const MainTab({super.key});
 
   @override
   _MainTabState createState() => _MainTabState();
 }
 
 class _MainTabState extends State<MainTab> {
-  late ThemeMode _currentThemeMode;
   final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _currentThemeMode = widget.themeMode;
-  }
 
   @override
   void dispose() {
@@ -35,18 +29,11 @@ class _MainTabState extends State<MainTab> {
     super.dispose();
   }
 
-  void _toggleTheme() {
-    setState(() {
-      _currentThemeMode = _currentThemeMode == ThemeMode.dark
-          ? ThemeMode.light
-          : ThemeMode.dark;
-      widget.onThemeChanged(_currentThemeMode);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = _currentThemeMode == ThemeMode.light;
+   final themeProvider = Provider.of<ThemeProvider>(context);
+    bool isDarkMode = themeProvider.themeMode == ThemeMode.light;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -57,11 +44,11 @@ class _MainTabState extends State<MainTab> {
               children: [
                 // Imagen principal de fondo sin desenfoque, ocupando toda la pantalla
                 ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),
                   ),
-                  child: Container(
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.height * 1.1,
                     child: ColorFiltered(
                       colorFilter: ColorFilter.mode(
@@ -108,20 +95,30 @@ class _MainTabState extends State<MainTab> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.account_circle,
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // Acción para el icono de login
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const LoginScreen(), // Cambia a tu pantalla de login
+                            ),
+                          );
                         },
                       ),
                       IconButton(
                         icon: Icon(
-                          isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                          color: Colors.white,
+                          isDarkMode 
+                              ? Icons.light_mode // Ícono de sol para tema claro
+                              : Icons.dark_mode, // Ícono de luna para tema oscuro
+                          color: Colors.white
                         ),
-                        onPressed: _toggleTheme,
+                        onPressed: () {
+                          themeProvider.toggleTheme(); // Cambia el tema
+                        },
                       ),
                     ],
                   ),
@@ -138,7 +135,7 @@ class _MainTabState extends State<MainTab> {
                           TextSpan(
                             text: 'Y',
                             style: GoogleFonts.righteous(
-                              color: Color(0xFFF4D516),
+                              color: const Color(0xFFF4D516),
                               fontSize: 40,
                               fontWeight: FontWeight.bold,
                             ),
@@ -167,7 +164,7 @@ class _MainTabState extends State<MainTab> {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                       child: Container(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
@@ -189,7 +186,7 @@ class _MainTabState extends State<MainTab> {
                                   TextSpan(
                                     text: 'INSPIRAN',
                                     style: GoogleFonts.righteous(
-                                      color: Color(0xFFF4D516),
+                                      color: const Color(0xFFF4D516),
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -218,7 +215,7 @@ class _MainTabState extends State<MainTab> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.08),
-                                Icon(
+                                const Icon(
                                   Icons.search,
                                   color: Color(0xFFF4D516),
                                 ),
@@ -232,32 +229,32 @@ class _MainTabState extends State<MainTab> {
                               height: 280,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 children: [
                                   _buildCuisineCardWithHighlight('Cocina',
                                       'China', 'assets/xina.png', isDarkMode),
-                                  SizedBox(width: 25),
+                                  const SizedBox(width: 25),
                                   _buildCuisineCardWithHighlight('Cocina',
                                       'India', 'assets/india.png', isDarkMode),
-                                  SizedBox(width: 25),
+                                  const SizedBox(width: 25),
                                   _buildCuisineCardWithHighlight(
                                       'Cocina',
                                       'Italiana',
                                       'assets/italia.png',
                                       isDarkMode),
-                                  SizedBox(width: 25),
+                                  const SizedBox(width: 25),
                                   _buildCuisineCardWithHighlight(
                                       'Cocina',
                                       'Mexicana',
                                       'assets/mexico.png',
                                       isDarkMode),
-                                  SizedBox(width: 25),
+                                  const SizedBox(width: 25),
                                   _buildCuisineCardWithHighlight(
                                       'Cocina',
                                       'Japonesa',
                                       'assets/japon.png',
                                       isDarkMode),
-                                  SizedBox(width: 25),
+                                  const SizedBox(width: 25),
                                   _buildCuisineCardWithHighlight(
                                       'Cocina',
                                       'Francesa',
@@ -278,14 +275,12 @@ class _MainTabState extends State<MainTab> {
                 Positioned(
                   bottom: MediaQuery.of(context).size.height * 0.1,
                   left: (MediaQuery.of(context).size.width - 50) / 2,
-
                   child: const Row(
                     children: [
                       Icon(
-                        Icons
-                            .keyboard_arrow_down, // Icono de flecha hacia abajo
-                        size: 50, // Tamaño del icono
-                        color: Color(0xFFF4D516), // Color del icono
+                        Icons.keyboard_arrow_down,
+                        size: 50,
+                        color: Color(0xFFF4D516),
                       ),
                     ],
                   ),
@@ -305,7 +300,8 @@ class _MainTabState extends State<MainTab> {
                         TextSpan(
                           text: 'Lo mejor de ',
                           style: GoogleFonts.righteous(
-                            color: isDarkMode ? Colors.black : Colors.white,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
@@ -313,7 +309,7 @@ class _MainTabState extends State<MainTab> {
                         TextSpan(
                           text: 'YUMM',
                           style: GoogleFonts.righteous(
-                            color: Color(0xFFF4D516),
+                            color: const Color(0xFFF4D516),
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
@@ -371,7 +367,7 @@ class _MainTabState extends State<MainTab> {
                           // Grid de recetas
                           GridView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -435,7 +431,7 @@ class _MainTabState extends State<MainTab> {
                           TextSpan(
                             text: 'temporada',
                             style: GoogleFonts.righteous(
-                              color: Color(0xFFF4D516),
+                              color: const Color(0xFFF4D516),
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                             ),
@@ -458,13 +454,13 @@ class _MainTabState extends State<MainTab> {
                     buildSeasonCards(), // Llamada a la función que construye las tarjetas
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                         child:
                             CircularProgressIndicator()); // Indicador de carga
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error al cargar datos'));
+                    return const Center(child: Text('Error al cargar datos'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No hay datos disponibles'));
+                    return const Center(child: Text('No hay datos disponibles'));
                   }
                   // Realizar el desplazamiento después de cargar los datos
                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -489,7 +485,7 @@ class _MainTabState extends State<MainTab> {
             //============   Sección Inspiracion   ================
             //=====================================================
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 37, 37, 37),
                 borderRadius: BorderRadius.circular(20),
@@ -584,12 +580,12 @@ class _MainTabState extends State<MainTab> {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           RichText(
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: firstPart + ' ',
+                  text: '$firstPart ',
                   style: GoogleFonts.righteous(
                     fontSize: 28,
                     color: isDarkMode ? Colors.white : Colors.white,
@@ -600,7 +596,7 @@ class _MainTabState extends State<MainTab> {
                   text: highlightedPart,
                   style: GoogleFonts.righteous(
                     fontSize: 28,
-                    color: Color(0xFFF4D516),
+                    color: const Color(0xFFF4D516),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -623,7 +619,8 @@ class _MainTabState extends State<MainTab> {
       VoidCallback onTap) {
     // Función para manejar el evento onTap
 
-    return GestureDetector(
+    return 
+    GestureDetector(
       onTap: onTap, // Acción al pulsar la tarjeta
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -638,12 +635,12 @@ class _MainTabState extends State<MainTab> {
                     height: isTop ? 300 : 150,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     },
                     errorBuilder: (context, error, stackTrace) {
-                      return Center(
+                      return const Center(
                         child: Text(
                           'Error al cargar imagen',
                           style: TextStyle(color: Colors.red),
@@ -658,7 +655,7 @@ class _MainTabState extends State<MainTab> {
                     height: isTop ? 300 : 150,
                   ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             title,
             style: GoogleFonts.righteous(
@@ -667,7 +664,7 @@ class _MainTabState extends State<MainTab> {
               color: isDarkMode ? Colors.black : Colors.white,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             description,
             style: TextStyle(
@@ -675,14 +672,14 @@ class _MainTabState extends State<MainTab> {
               color: isDarkMode ? Colors.grey[800] : Colors.grey[400],
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 14,
                 backgroundImage: AssetImage('assets/author.jpg'),
               ),
-              SizedBox(width: 6),
+              const SizedBox(width: 6),
               Text(
                 'por $author',
                 style: TextStyle(
@@ -707,10 +704,10 @@ class _MainTabState extends State<MainTab> {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.only(
-          topLeft: flip ? Radius.circular(100) : Radius.circular(20),
-          topRight: flip ? Radius.circular(20) : Radius.circular(100),
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          topLeft: flip ? const Radius.circular(100) : const Radius.circular(20),
+          topRight: flip ? const Radius.circular(20) : const Radius.circular(100),
+          bottomLeft: const Radius.circular(20),
+          bottomRight: const Radius.circular(20),
         ),
       ),
       child: Stack(
@@ -725,7 +722,7 @@ class _MainTabState extends State<MainTab> {
                 width: 150,
                 height: 150,
                 errorBuilder: (context, error, stackTrace) {
-                  return Icon(
+                  return const Icon(
                     Icons.error,
                     size: 50,
                     color: Colors.red,
@@ -735,7 +732,7 @@ class _MainTabState extends State<MainTab> {
                   if (loadingProgress == null) {
                     return child; // La imagen se cargó correctamente
                   } else {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(), // Indicador de carga
                     );
                   }
@@ -749,13 +746,13 @@ class _MainTabState extends State<MainTab> {
             left: 0,
             right: 0,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: Center(
                 child: Text(
                   title,
                   style: GoogleFonts.righteous(
                     fontSize: 28,
-                    color: flip ? Colors.brown : Color(0xFFF4D516),
+                    color: flip ? Colors.brown : const Color(0xFFF4D516),
                     fontWeight: FontWeight.bold,
                   ),
                 ),

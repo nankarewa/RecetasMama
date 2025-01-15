@@ -1,50 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:recetas/Model/Receta.dart';
-import 'package:recetas/Model/RecetasData.dart';
-import 'package:recetas/Tabs/mainTab.dart';
-import 'Style/AppTheme.dart'; // Importamos los temas
+import 'package:provider/provider.dart';
+import 'package:yumm/Style/AppTheme.dart';
+import 'package:yumm/Tabs/mainTab.dart';
+import 'Provider/theme_provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
-
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.light;
-
-  // Función para cambiar el tema
-  void _toggleTheme(ThemeMode newThemeMode) {
-    setState(() {
-      _themeMode = newThemeMode;
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       title: 'Yumm App',
-      theme: ThemeData(
-        primarySwatch: Colors.yellow,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        primarySwatch: Colors.yellow,
-        brightness: Brightness.dark,
-      ),
-      themeMode: _themeMode,
-      home: MainTab(
-        themeMode: _themeMode, // Pasamos el tema actual
-        onThemeChanged: _toggleTheme, // Pasamos la función para cambiar el tema
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeProvider.themeMode, // Usamos ThemeProvider aquí
+      home: const MainTab(),
     );
   }
 }
-
 
 
 

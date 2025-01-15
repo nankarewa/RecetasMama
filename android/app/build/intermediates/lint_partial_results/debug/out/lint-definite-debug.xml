@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.1.0" type="incidents">
+
+    <incident
+        id="ObsoleteSdkInt"
+        severity="warning"
+        message="This folder configuration (`v21`) is unnecessary; `minSdkVersion` is 21. Merge all the resources in this folder into `drawable`.">
+        <fix-data file="${:app*debug*sourceProvider*0*resDir*0}/drawable-v21" folderName="drawable" requiresApi="21"/>
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/drawable-v21"/>
+    </incident>
+
+    <incident
+        id="IconLauncherShape"
+        severity="warning"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/mipmap-hdpi/ic_launcher.png"/>
+    </incident>
+
+    <incident
+        id="IconDipSize"
+        severity="warning"
+        message="The image `ic_launcher.png` varies significantly in its density-independent (dip) size across the various density versions: mipmap-hdpi\ic_launcher.png: 32x32 dp (48x48 px), mipmap-mdpi\ic_launcher.png: 72x72 dp (72x72 px), mipmap-xhdpi\ic_launcher.png: 47x47 dp (93x93 px), mipmap-xxhdpi\ic_launcher.png: 48x48 dp (144x144 px), mipmap-xxxhdpi\ic_launcher.png: 48x48 dp (192x192 px)">
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/mipmap-hdpi/ic_launcher.png"/>
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/mipmap-xhdpi/ic_launcher.png"/>
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/mipmap-xxhdpi/ic_launcher.png"/>
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/mipmap-xxxhdpi/ic_launcher.png"/>
+        <location
+            file="${:app*debug*sourceProvider*0*resDir*0}/mipmap-mdpi/ic_launcher.png"/>
+    </incident>
+
+</incidents>

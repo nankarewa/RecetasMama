@@ -1,0 +1,52 @@
+C:\Users\agarcia\Documents\recetas\android\app\src\main\AndroidManifest.xml:10: Warning: Attribute usesCleartextTraffic is only used in API level 23 and higher (current min is 21) [UnusedAttribute]
+        android:usesCleartextTraffic="true">
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedAttribute":
+   This check finds attributes set in XML files that were introduced in a
+   version newer than the oldest version targeted by your application (with
+   the minSdkVersion attribute).
+
+   This is not an error; the application will simply ignore the attribute.
+   However, if the attribute is important to the appearance or functionality
+   of your application, you should consider finding an alternative way to
+   achieve the same result with only available attributes, and then you can
+   optionally create a copy of the layout in a layout-vNN folder which will be
+   used on API NN or higher where you can take advantage of the newer
+   attribute.
+
+   Note: This check does not only apply to attributes. For example, some tags
+   can be unused too, such as the new <tag> element in layouts introduced in
+   API 21.
+
+C:\Users\agarcia\Documents\recetas\android\app\src\main\res\drawable-v21: Warning: This folder configuration (v21) is unnecessary; minSdkVersion is 21. Merge all the resources in this folder into drawable. [ObsoleteSdkInt]
+
+   Explanation for issues of type "ObsoleteSdkInt":
+   This check flags version checks that are not necessary, because the
+   minSdkVersion (or surrounding known API level) is already at least as high
+   as the version checked for.
+
+   Similarly, it also looks for resources in -vNN folders, such as values-v14
+   where the version qualifier is less than or equal to the minSdkVersion,
+   where the contents should be merged into the best folder.
+
+C:\Users\agarcia\Documents\recetas\android\app\src\main\res\mipmap-hdpi\ic_launcher.png: Warning: Launcher icons should not fill every pixel of their square region; see the design guide for details [IconLauncherShape]
+
+   Explanation for issues of type "IconLauncherShape":
+   According to the Android Design Guide
+   (https://material.io/design/iconography/) your launcher icons should "use a
+   distinct silhouette", a "three-dimensional, front view, with a slight
+   perspective as if viewed from above, so that users perceive some depth."
+
+   The unique silhouette implies that your launcher icon should not be a
+   filled square.
+
+C:\Users\agarcia\Documents\recetas\android\app\src\main\res\mipmap-hdpi\ic_launcher.png: Warning: The image ic_launcher.png varies significantly in its density-independent (dip) size across the various density versions: mipmap-hdpiic_launcher.png: 32x32 dp (48x48 px), mipmap-mdpiic_launcher.png: 72x72 dp (72x72 px), mipmap-xhdpiic_launcher.png: 47x47 dp (93x93 px), mipmap-xxhdpiic_launcher.png: 48x48 dp (144x144 px), mipmap-xxxhdpiic_launcher.png: 48x48 dp (192x192 px) [IconDipSize]
+
+   Explanation for issues of type "IconDipSize":
+   Checks the all icons which are provided in multiple densities, all compute
+   to roughly the same density-independent pixel (dip) size. This catches
+   errors where images are either placed in the wrong folder, or icons are
+   changed to new sizes but some folders are forgotten.
+
+0 errors, 4 warnings
