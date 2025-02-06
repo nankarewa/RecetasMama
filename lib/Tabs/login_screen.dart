@@ -6,6 +6,7 @@ import 'package:yumm/Tabs/mainTab.dart';
 import 'package:yumm/Tabs/registrer_screen.dart';
 import '../Services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yumm/Tabs/userTab.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
 
   String? _token;
-  String? _userEmail;  // Para mostrar el correo del usuario
+  String? _userEmail; // Para mostrar el correo del usuario
   String? _userName;
   String? _userPhoto;
 
@@ -31,20 +32,20 @@ class _LoginScreenState extends State<LoginScreen> {
     _checkLoginStatus();
   }
 
- Future<void> _checkLoginStatus() async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-  final email = prefs.getString('user_email');
-  final name = prefs.getString('user_name');
-  final photo = prefs.getString('user_photo');
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final email = prefs.getString('user_email');
+    final name = prefs.getString('user_name');
+    final photo = prefs.getString('user_photo');
 
-  setState(() {
-    _token = token;
-    _userEmail = email;
-    _userName = name;
-    _userPhoto = photo;
-  });
-}
+    setState(() {
+      _token = token;
+      _userEmail = email;
+      _userName = name;
+      _userPhoto = photo;
+    });
+  }
 
   // Función para iniciar sesión
   void _login() async {
@@ -52,11 +53,11 @@ class _LoginScreenState extends State<LoginScreen> {
       bool success = await _authService.login(_email, _password);
       if (success) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_email', _email);  
+        await prefs.setString('user_email', _email);
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainTab()),
+          MaterialPageRoute(builder: (context) => const UserTab()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -68,18 +69,40 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Función para cerrar sesión
   Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
-    await prefs.remove('user_email');
+    try {
+      // 1️⃣ Cerrar sesión de Google
+      await GoogleAuthService.signOutGoogle(context);
 
-    setState(() {
-      _token = null;
-      _userEmail = null;
-    });
+      // 2️⃣ Limpiar todos los datos guardados
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear(); // 🔥 Borra todo (token, email, nombre, foto)
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Sesión cerrada exitosamente')),
-    );
+      // 3️⃣ Resetear el estado
+      setState(() {
+        _token = null;
+        _userEmail = null;
+        _userName = null;
+        _userPhoto = null;
+      });
+
+      print("🟢 Sesión cerrada y datos eliminados.");
+
+      // 4️⃣ Redirigir al Login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+
+      // 5️⃣ Notificación
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sesión cerrada exitosamente')),
+      );
+    } catch (error) {
+      print("❌ Error al cerrar sesión: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cerrar sesión: $error')),
+      );
+    }
   }
 
   @override
@@ -89,41 +112,41 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: _token != null
-            ? _buildUserInfo()  // Mostrar info si está logueado
-            : _buildLoginForm(),  // Mostrar formulario si no
+            ? _buildUserInfo() // Mostrar info si está logueado
+            : _buildLoginForm(), // Mostrar formulario si no
       ),
     );
   }
 
   // UI para mostrar la información del usuario logueado
   Widget _buildUserInfo() {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      _userPhoto != null
-          ? CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(_userPhoto!),
-            )
-          : const Icon(Icons.account_circle, size: 100, color: Colors.blue),
-      const SizedBox(height: 16),
-      Text(
-        'Bienvenido, ${_userName ?? 'Usuario'}',
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        _userEmail ?? '',
-        style: const TextStyle(fontSize: 16, color: Colors.grey),
-      ),
-      const SizedBox(height: 32),
-      ElevatedButton(
-        onPressed: _logout,
-        child: const Text('Cerrar Sesión'),
-      ),
-    ],
-  );
-}
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _userPhoto != null
+            ? CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(_userPhoto!),
+              )
+            : const Icon(Icons.account_circle, size: 100, color: Colors.blue),
+        const SizedBox(height: 16),
+        Text(
+          'Bienvenido, ${_userName ?? 'Usuario'}',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          _userEmail ?? '',
+          style: const TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+        const SizedBox(height: 32),
+        ElevatedButton(
+          onPressed: _logout,
+          child: const Text('Cerrar Sesión'),
+        ),
+      ],
+    );
+  }
 
   // Formulario de inicio de sesión
   Widget _buildLoginForm() {
@@ -161,28 +184,38 @@ class _LoginScreenState extends State<LoginScreen> {
             child: const Text('¿No tienes cuenta? Regístrate'),
           ),
 
-
- // BOTÓN DE GOOGLE
-        ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            side: const BorderSide(color: Colors.grey),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          // BOTÓN DE GOOGLE
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              side: const BorderSide(color: Colors.grey),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            ),
+            icon: Image.asset(
+              'assets/google_logo.png', // Icono de Google
+              height: 24,
+              width: 24,
+            ),
+            label: const Text('Iniciar sesión con Google'),
+            onPressed: () async {
+              bool success = await GoogleAuthService.signInWithGoogle(context);
+              
+              if (success) {
+                // ✅ Si el login fue exitoso, redirige al UserTab
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserTab()),
+                );
+              } else {
+                // ❌ Si hubo un error, muestra un mensaje
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Error al iniciar sesión con Google')),
+                );
+              }
+            },
           ),
-          icon: Image.asset(
-            'assets/google_logo.png',  // Icono de Google
-            height: 24,
-            width: 24,
-          ),
-          label: const Text('Iniciar sesión con Google'),
-          onPressed: () async {
-            await GoogleAuthService.signInWithGoogle(context);
-            // Aquí puedes redirigir al usuario si es necesario
-          },
-        ),
-
-
         ],
       ),
     );

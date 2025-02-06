@@ -11,6 +11,7 @@ import 'package:yumm/Tabs/recetaTab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // Importamos los temas
 import 'package:google_fonts/google_fonts.dart';
+import 'package:yumm/Tabs/userTab.dart';
 import '../Proxy/mainMenuApi.dart';
 
 class MainTab extends StatefulWidget {
@@ -23,12 +24,28 @@ class MainTab extends StatefulWidget {
 class _MainTabState extends State<MainTab> {
   final ScrollController _scrollController = ScrollController();
 
+   String? _userPhoto;
+
   @override
   void dispose() {
     _scrollController.dispose(); // Limpiar el controlador
     super.dispose();
   }
 
+   @override
+  void initState() {
+    super.initState();
+    _loadUserPhoto();
+  }
+
+
+ // 🔄 Cargar la foto de perfil del usuario
+  Future<void> _loadUserPhoto() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userPhoto = prefs.getString('user_photo');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,32 +111,31 @@ class _MainTabState extends State<MainTab> {
                   right: 16,
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.account_circle,
-                          color: Colors.white,
-                        ),
+                    IconButton(
+                        icon: _userPhoto != null && _userPhoto!.isNotEmpty
+                            ? CircleAvatar(
+                                radius: 16,
+                                backgroundImage: NetworkImage(_userPhoto!),
+                              )
+                            : const Icon(
+                                Icons.account_circle,
+                                color: Colors.white,
+                              ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const LoginScreen(), // Cambia a tu pantalla de login
-                            ),
-                          );
+                       navigateToProfileOrLogin(context);
                         },
                       ),
-                      IconButton(
-                        icon: Icon(
-                          isDarkMode 
-                              ? Icons.light_mode // Ícono de sol para tema claro
-                              : Icons.dark_mode, // Ícono de luna para tema oscuro
-                          color: Colors.white
-                        ),
-                        onPressed: () {
-                          themeProvider.toggleTheme(); // Cambia el tema
-                        },
-                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     isDarkMode 
+                      //         ? Icons.light_mode // Ícono de sol para tema claro
+                      //         : Icons.dark_mode, // Ícono de luna para tema oscuro
+                      //     color: Colors.white
+                      //   ),
+                      //   onPressed: () {
+                      //     themeProvider.toggleTheme(); // Cambia el tema
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
@@ -608,6 +624,25 @@ class _MainTabState extends State<MainTab> {
     );
   }
 
+  void navigateToProfileOrLogin(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+
+  if (token != null && token.isNotEmpty) {
+    // 🔐 Usuario autenticado -> ir a UserTab
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const UserTab()),
+    );
+  } else {
+    // ❌ No autenticado -> ir a LoginScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+}
+
   // Widget para crear un card de receta detallada con descripción
   Widget _buildDetailedRecipeCard(
       String imagePath,
@@ -677,7 +712,7 @@ class _MainTabState extends State<MainTab> {
             children: [
               const CircleAvatar(
                 radius: 14,
-                backgroundImage: AssetImage('assets/author.jpg'),
+                //backgroundImage: AssetImage('assets/author.jpg'),
               ),
               const SizedBox(width: 6),
               Text(
@@ -697,7 +732,6 @@ class _MainTabState extends State<MainTab> {
 // Widget para crear un card de ingredientes de temporada
   Widget _buildSeasonCard(
       String title, String imagePath, Color color, bool flip) {
-    print(imagePath);
     return Container(
       width: 180,
       height: 180,
